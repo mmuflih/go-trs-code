@@ -50,11 +50,11 @@ _new:
 	fmt.Println(y, w)
 	code = now.Format("0601")
 	suff := "A"
-	seqStr := ""
-	for i := 1; i <= codeLength-(len(pref+code)+4); i++ {
-		seqStr += "0"
+	seqStr := strconv.Itoa(seq)
+	for i := 1; i < codeLength-(len(pref+code+seqStr)); i++ {
+		seqStr = "0" + seqStr
 	}
-	return fmt.Sprintf("%s%s.%s.%s", pref, code, seqStr+strconv.Itoa(seq), suff)
+	return fmt.Sprintf("%s%s.%s.%s", pref, code, seqStr, suff)
 }
 
 // ExtractCode returns prefix, seq, suffix
