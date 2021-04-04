@@ -2,11 +2,10 @@ package gocode
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
-
-	"github.com/mmuflih/datelib"
 )
 
 /**
@@ -16,7 +15,7 @@ import (
  * muflic.24@gmail.com
  **/
 
-func IncCode(pref, code string, force bool) string {
+func IncCode(pref, code string, seq, codeLength int, force bool) string {
 	/** force with old code */
 	var r rune
 	var codes []string
@@ -46,7 +45,32 @@ func IncCode(pref, code string, force bool) string {
 	return fmt.Sprintf("%s.%s.%s", codes[0], codes[1], string(r+1))
 
 _new:
-	code = time.Now().Format(datelib.YMD_SHORT_WS)
+	now := time.Now()
+	y, w := now.Local().ISOWeek()
+	fmt.Println(y, w)
+	code = now.Format("0601")
 	suff := "A"
-	return fmt.Sprintf("%s.%s.%s", pref, code, suff)
+	seqStr := ""
+	for i := 1; i <= codeLength-(len(pref+code)+4); i++ {
+		seqStr += "0"
+	}
+	return fmt.Sprintf("%s%s.%s.%s", pref, code, seqStr+strconv.Itoa(seq), suff)
+}
+
+// ExtractCode returns prefix, seq, suffix
+// Prefix is the begining of code
+// Seq is sequence number of code
+// Suffix is sequence number place on end of code
+// suffix consists of the uppercase alphabet ex: A, B, C ...
+func ExtractCode(code string) (string, int, string) {
+	codes := strings.Split(code, ".")
+	if len(codes) < 3 {
+		return "", 1, "A"
+	}
+	seq, err := strconv.Atoi(codes[1])
+	if err != nil {
+		seq = 1
+	}
+
+	return codes[0], seq, codes[2]
 }
