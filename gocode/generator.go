@@ -46,12 +46,10 @@ func IncCode(pref, code string, seq, codeLength int, force bool) string {
 
 _new:
 	now := time.Now()
-	y, w := now.Local().ISOWeek()
-	fmt.Println(y, w)
 	code = now.Format("0601")
 	suff := "A"
 	seqStr := strconv.Itoa(seq)
-	for i := 1; i < codeLength-(len(pref+code+seqStr)); i++ {
+	for i := 1; i < codeLength-(len(pref+code+seqStr))-1; i++ {
 		seqStr = "0" + seqStr
 	}
 	return fmt.Sprintf("%s%s.%s.%s", pref, code, seqStr, suff)
