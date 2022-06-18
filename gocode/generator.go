@@ -49,7 +49,8 @@ _new:
 	code = now.Format("0601")
 	suff := "A"
 	seqStr := strconv.Itoa(seq)
-	for i := 1; i < codeLength-(len(pref+code+seqStr))-1; i++ {
+	nolLength := codeLength - (len(pref) + len(suff) + len(code)) - 2
+	for i := len(seqStr); i < nolLength; i++ {
 		seqStr = "0" + seqStr
 	}
 	return fmt.Sprintf("%s%s.%s.%s", pref, code, seqStr, suff)
